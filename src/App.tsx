@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Palette, Image as ImageIcon, Wrench, Users, Menu, X } from 'lucide-react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import design1 from './design1.jpg';
 import design2 from './design2.jpg';
 import design3 from './design3.jpg';
@@ -21,23 +20,349 @@ import AIBackground from './components/AIBackground';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentSection, setCurrentSection] = useState('home');
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.slice(1) || 'home';
+      setCurrentSection(hash);
+      const element = document.getElementById(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    handleHashChange(); // Initial check
+
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, section: string) => {
+    e.preventDefault();
+    window.location.hash = section;
+  };
+
+  const renderSection = () => {
+    switch (currentSection) {
+      case 'about':
+        return <About />;
+      case 'services':
+        return <Services />;
+      case 'contact':
+        return <Contact />;
+      case 'portfolio':
+        return <Portfolio />;
+      case 'brand-identity':
+        return <BrandIdentity />;
+      default:
+        return (
+          <>
+            {/* Hero Section */}
+            <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden">
+              <AIBackground />
+              <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div className="grid md:grid-cols-2 gap-12 items-center">
+                  <div className="space-y-8">
+                    <div className="space-y-4">
+                      <h1 className="text-6xl font-bold drop-shadow-lg leading-tight">
+                        <span className="inline-block bg-gradient-to-r from-orange-500 via-orange-400 to-orange-300 text-transparent bg-clip-text animate-slide-in-left opacity-0 [animation-fill-mode:forwards]">
+                          Where Bold Ideas
+                        </span>
+                        <br />
+                        <span className="inline-block bg-gradient-to-r from-orange-500 via-orange-400 to-orange-300 text-transparent bg-clip-text animate-slide-in-right opacity-0 [animation-fill-mode:forwards] [animation-delay:0.3s]">
+                          Become Beautiful Designs
+                        </span>
+                      </h1>
+                      <p className="text-gray-800 text-lg drop-shadow-md max-w-xl animate-fade-in-up opacity-0 [animation-fill-mode:forwards] [animation-delay:0.6s]">
+                        Discover the perfect blend of artistry and innovation at The Art Beat. 
+                        We bring your creative visions to life with passion and precision.
+                      </p>
+                    </div>
+                    <div className="flex flex-wrap gap-4">
+                      <a
+                        href="#portfolio"
+                        className="bg-white/90 text-blue-700 px-8 py-3 rounded-full hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                      >
+                        Explore Our Work
+                      </a>
+                      <a
+                        href="/resume.pdf"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="bg-transparent border-2 border-gray-900 text-gray-900 px-8 py-3 rounded-full hover:bg-gray-900/10 transition-all duration-300 flex items-center gap-2"
+                      >
+                        View Resume
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                        </svg>
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-8 pt-4">
+                      <div className="flex -space-x-4">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="w-12 h-12 rounded-full border-2 border-white bg-gray-800 overflow-hidden">
+                            <img 
+                              src={`https://i.pravatar.cc/150?img=${i}`}
+                              alt={`Team member ${i}`}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <div className="text-white/80">
+                        <div className="font-semibold text-brown-700">20+ Happy Clients</div>
+                        <div className="text-sm text-brown-600">Trusted by artists worldwide</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="hidden md:block">
+                    <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl border border-white/20 shadow-xl transform hover:scale-105 transition-all duration-300">
+                      <div className="grid grid-cols-2 gap-6">
+                        {[
+                          { number: "100+", label: "Projects Completed" },
+                          { number: "20+", label: "Happy Clients" },
+                          { number: "2+", label: "Years Experience" },
+                          { number: "24/7", label: "Support" }
+                        ].map((stat, index) => (
+                          <div key={index} className="text-center group">
+                            <div className="text-4xl font-bold text-brown-700 mb-2 drop-shadow-lg group-hover:text-blue-400 transition-colors duration-300">{stat.number}</div>
+                            <div className="text-brown-600 text-sm group-hover:text-blue-300 transition-colors duration-300">{stat.label}</div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* My Designs Section */}
+            <section id="portfolio" className="py-20 bg-gradient-to-b from-white to-gray-50">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid md:grid-cols-2 gap-12">
+                  {/* Left Side Content */}
+                  <div className="space-y-8">
+                    <div>
+                      <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-500 via-sky-500 to-amber-700 text-transparent bg-clip-text mb-6 animate-gradient-shift">
+                        My Creative Journey
+                      </h2>
+                      <p className="text-gray-600 mb-6 animate-fade-in-up">
+                        With over 2 years of experience in graphic design, I've developed a unique style that combines modern aesthetics with functional design principles.
+                      </p>
+                    </div>
+                    
+                    <div className="space-y-6">
+                      <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Design Philosophy</h3>
+                        <p className="text-gray-600">Creating designs that not only look beautiful but also serve their purpose effectively.</p>
+                      </div>
+                      
+                      <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105 hover:-translate-y-1 duration-300">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-6 animate-fade-in bg-gradient-to-r from-orange-500 via-sky-500 to-amber-700 text-transparent bg-clip-text">
+                          Skills & Expertise
+                        </h3>
+                        <div className="grid grid-cols-2 gap-6">
+                          {[
+                            { skill: "UI/UX Design", delay: "0", icon: "🎨", color: "from-purple-500 to-pink-500", textColor: "text-purple-600" },
+                            { skill: "Brand Identity", delay: "100", icon: "✨", color: "from-blue-500 to-teal-500", textColor: "text-blue-600" },
+                            { skill: "Logo Design", delay: "200", icon: "🎯", color: "from-amber-500 to-orange-500", textColor: "text-amber-600" },
+                            { skill: "Web Design", delay: "300", icon: "🌐", color: "from-green-500 to-emerald-500", textColor: "text-green-600" },
+                            { skill: "Mobile Design", delay: "400", icon: "📱", color: "from-indigo-500 to-purple-500", textColor: "text-indigo-600" },
+                            { skill: "Graphic Design", delay: "500", icon: "🎪", color: "from-rose-500 to-red-500", textColor: "text-rose-600" }
+                          ].map((item, index) => (
+                            <div 
+                              key={index}
+                              className="group relative overflow-hidden rounded-xl hover:shadow-lg transition-all duration-500 ease-out"
+                              style={{
+                                animation: `fadeSlideIn 0.6s ease-out ${item.delay}ms both`
+                              }}
+                            >
+                              <div className="relative p-4 bg-white border border-gray-100 rounded-xl group-hover:border-transparent transition-all duration-300">
+                                {/* Animated gradient background */}
+                                <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"
+                                     style={{
+                                       backgroundImage: `linear-gradient(120deg, ${item.color})`,
+                                       opacity: 0,
+                                       transform: 'scale(0.8)',
+                                     }}
+                                />
+                                
+                                <div className="relative flex items-center space-x-3 z-20">
+                                  {/* Skill Icon with bounce animation */}
+                                  <div className="text-2xl group-hover:animate-bounce">{item.icon}</div>
+                                  
+                                  {/* Skill Name */}
+                                  <span className={`font-medium ${item.textColor} transition-colors duration-300 relative z-20`}>
+                                    {item.skill}
+                                    
+                                    {/* Animated underline */}
+                                    <span className={`absolute bottom-0 left-0 w-0 h-0.5 ${item.textColor} group-hover:w-full transition-all duration-300`}/>
+                                  </span>
+                                </div>
+                                
+                                {/* Progress indicator */}
+                                <div className="mt-2 relative h-1 bg-gray-100 rounded-full overflow-hidden">
+                                  <div 
+                                    className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r group-hover:animate-progress"
+                                    style={{
+                                      backgroundImage: `linear-gradient(90deg, ${item.color})`,
+                                      width: '0%'
+                                    }}
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all">
+                        <h3 className="text-xl font-semibold text-gray-800 mb-2">Project Stats</h3>
+                        <div className="grid grid-cols-2 gap-6">
+                          <div className="text-center">
+                            <div className="text-3xl font-bold text-blue-600">100+</div>
+                            <div className="text-gray-600">Projects</div>
+                          </div>
+                          <div className="text-center">
+                            <div className="text-3xl font-bold text-blue-600">20+</div>
+                            <div className="text-gray-600">Clients</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Side Content */}
+                  <div className="space-y-6">
+                    {/* Logo */}
+                    <div className="flex justify-center mb-8">
+                      <img 
+                        src={logoImage}
+                        alt="Logo"
+                        className="w-32 h-32 rounded-full object-cover border-4 border-orange-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+                      />
+                    </div>
+
+                    {/* Images Grid */}
+                    <div className="grid grid-cols-2 gap-6">
+                      {[design1, design2, design3, design4].map((image, index) => (
+                        <div key={index} className="group relative overflow-hidden rounded-xl aspect-[4/3] shadow-lg hover:shadow-xl transition-all duration-300">
+                          <img 
+                            src={image}
+                            alt={`Design ${index + 1}`}
+                            className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            {/* Side Matter Section */}
+            <section id="services" className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Why Choose Us Section */}
+                <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
+                  <div className="space-y-4">
+                    <h2 className="text-3xl font-bold text-gray-800">Why Choose Us?</h2>
+                    <p className="text-gray-600">We combine creativity with technical expertise to deliver exceptional designs that help your brand stand out.</p>
+                    <ul className="space-y-3">
+                      {[
+                        "Professional and experienced team",
+                        "Customized design solutions",
+                        "Modern design trends",
+                        "Competitive pricing",
+                        "Regular updates and revisions"
+                      ].map((item, index) => (
+                        <li 
+                          key={index} 
+                          className="flex items-center space-x-2 animate-fade-in-up"
+                          style={{ animationDelay: `${index * 200}ms` }}
+                        >
+                          <svg 
+                            className="h-5 w-5 text-green-500 animate-bounce" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                            style={{ animationDelay: `${index * 200}ms` }}
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          <span className="text-gray-700">{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl"></div>
+                    <img 
+                      src={whyChooseUsImage}
+                      alt="Why Choose Us"
+                      className="relative rounded-2xl shadow-2xl w-full h-[300px] object-cover"
+                    />
+                  </div>
+                </div>
+
+                {/* Fast Delivery Section */}
+                <div className="grid md:grid-cols-3 gap-8">
+                  <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                    <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
+                      <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">Fast Delivery</h3>
+                    <p className="text-gray-600">Quick turnaround time for all your design projects without compromising quality.</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                    <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
+                      <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">Quality Assurance</h3>
+                    <p className="text-gray-600">Every design goes through rigorous quality checks to ensure perfection.</p>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+                    <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
+                      <svg className="h-6 w-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
+                      </svg>
+                    </div>
+                    <h3 className="text-xl font-semibold mb-2">24/7 Support</h3>
+                    <p className="text-gray-600">Round-the-clock support to help you with any design-related queries.</p>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </>
+        );
+    }
+  };
 
   return (
-    <Router>
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-sky-50">
       {/* Navigation */}
       <nav className="bg-white/80 backdrop-blur-sm fixed w-full z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-                <img 
-                  src={logoImage}
-                  alt="The Art Beat Logo"
-                  className="w-10 h-10 rounded-full object-cover border-2 border-orange-500 shadow-md"
-                />
-                <Link to="/" className="ml-2 text-2xl font-bold text-orange-500">
+              <img 
+                src={logoImage}
+                alt="The Art Beat Logo"
+                className="w-10 h-10 rounded-full object-cover border-2 border-orange-500 shadow-md"
+              />
+              <a 
+                href="#home" 
+                onClick={(e) => handleNavClick(e, 'home')}
+                className="ml-2 text-2xl font-bold text-orange-500"
+              >
                 The Art Beat
-                </Link>
+              </a>
             </div>
 
             {/* Mobile menu button */}
@@ -52,14 +377,49 @@ function App() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex space-x-8">
-                <NavLink href="/" icon={<Palette className="h-4 w-4" />}>Home</NavLink>
-                <NavLink href="/portfolio" icon={<ImageIcon className="h-4 w-4" />}>Portfolio</NavLink>
-                <NavLink href="/services" icon={<Wrench className="h-4 w-4" />}>Services</NavLink>
-                <NavLink href="/about" icon={<Users className="h-4 w-4" />}>About Us</NavLink>
-                <NavLink href="/contact" icon={<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <a 
+                href="#home" 
+                onClick={(e) => handleNavClick(e, 'home')}
+                className="flex items-center space-x-1 text-gray-700 hover:text-orange-500 transition-colors"
+              >
+                <Palette className="h-4 w-4" />
+                <span>Home</span>
+              </a>
+              <a 
+                href="#portfolio" 
+                onClick={(e) => handleNavClick(e, 'portfolio')}
+                className="flex items-center space-x-1 text-gray-700 hover:text-orange-500 transition-colors"
+              >
+                <ImageIcon className="h-4 w-4" />
+                <span>Portfolio</span>
+              </a>
+              <a 
+                href="#services" 
+                onClick={(e) => handleNavClick(e, 'services')}
+                className="flex items-center space-x-1 text-gray-700 hover:text-orange-500 transition-colors"
+              >
+                <Wrench className="h-4 w-4" />
+                <span>Services</span>
+              </a>
+              <a 
+                href="#about" 
+                onClick={(e) => handleNavClick(e, 'about')}
+                className="flex items-center space-x-1 text-gray-700 hover:text-orange-500 transition-colors"
+              >
+                <Users className="h-4 w-4" />
+                <span>About Us</span>
+              </a>
+              <a 
+                href="#contact" 
+                onClick={(e) => handleNavClick(e, 'contact')}
+                className="flex items-center space-x-1 text-gray-700 hover:text-orange-500 transition-colors"
+              >
+                <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>}>Contact Us</NavLink>
-              </div>
+                </svg>
+                <span>Contact Us</span>
+              </a>
+            </div>
           </div>
         </div>
 
@@ -67,309 +427,55 @@ function App() {
         {isMenuOpen && (
           <div className="md:hidden bg-white/95 backdrop-blur-sm">
             <div className="px-2 pt-2 pb-3 space-y-1">
-                <MobileNavLink href="/">Home</MobileNavLink>
-                <MobileNavLink href="/portfolio">Portfolio</MobileNavLink>
-                <MobileNavLink href="/services">Services</MobileNavLink>
-                <MobileNavLink href="/about">About Us</MobileNavLink>
-                <MobileNavLink href="/contact">Contact Us</MobileNavLink>
-              </div>
+              <a 
+                href="#home" 
+                onClick={(e) => handleNavClick(e, 'home')}
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors"
+              >
+                Home
+              </a>
+              <a 
+                href="#portfolio" 
+                onClick={(e) => handleNavClick(e, 'portfolio')}
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors"
+              >
+                Portfolio
+              </a>
+              <a 
+                href="#services" 
+                onClick={(e) => handleNavClick(e, 'services')}
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors"
+              >
+                Services
+              </a>
+              <a 
+                href="#about" 
+                onClick={(e) => handleNavClick(e, 'about')}
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors"
+              >
+                About Us
+              </a>
+              <a 
+                href="#contact" 
+                onClick={(e) => handleNavClick(e, 'contact')}
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors"
+              >
+                Contact Us
+              </a>
+            </div>
           </div>
         )}
       </nav>
 
-        {/* Routes */}
-        <Routes>
-          <Route path="/" element={
-            <>
-      {/* Hero Section */}
-              <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-                <AIBackground />
-                <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-                    <div className="space-y-8">
-                      <div className="space-y-4">
-                        <h1 className="text-6xl font-bold drop-shadow-lg leading-tight">
-                          <span className="inline-block bg-gradient-to-r from-orange-500 via-orange-400 to-orange-300 text-transparent bg-clip-text animate-slide-in-left opacity-0 [animation-fill-mode:forwards]">
-                            Where Bold Ideas
-                          </span>
-                          <br />
-                          <span className="inline-block bg-gradient-to-r from-orange-500 via-orange-400 to-orange-300 text-transparent bg-clip-text animate-slide-in-right opacity-0 [animation-fill-mode:forwards] [animation-delay:0.3s]">
-                            Become Beautiful Designs
-                          </span>
-                        </h1>
-                        <p className="text-gray-800 text-lg drop-shadow-md max-w-xl animate-fade-in-up opacity-0 [animation-fill-mode:forwards] [animation-delay:0.6s]">
-                          Discover the perfect blend of artistry and innovation at The Art Beat. 
-                          We bring your creative visions to life with passion and precision.
-                        </p>
-                      </div>
-                      <div className="flex flex-wrap gap-4">
-                        <Link
-                          to="/portfolio"
-                          className="bg-white/90 text-blue-700 px-8 py-3 rounded-full hover:bg-white transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-                        >
-                Explore Our Work
-                        </Link>
-                        <a
-                          href="/resume.pdf"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="bg-transparent border-2 border-gray-900 text-gray-900 px-8 py-3 rounded-full hover:bg-gray-900/10 transition-all duration-300 flex items-center gap-2"
-                        >
-                          View Resume
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                          </svg>
-                        </a>
-            </div>
-                      <div className="flex items-center gap-8 pt-4">
-                        <div className="flex -space-x-4">
-                          {[1, 2, 3].map((i) => (
-                            <div key={i} className="w-12 h-12 rounded-full border-2 border-white bg-gray-800 overflow-hidden">
-                              <img 
-                                src={`https://i.pravatar.cc/150?img=${i}`}
-                                alt={`Team member ${i}`}
-                                className="w-full h-full object-cover"
-                              />
-                            </div>
-                          ))}
-                        </div>
-                        <div className="text-white/80">
-                          <div className="font-semibold text-brown-700">20+ Happy Clients</div>
-                          <div className="text-sm text-brown-600">Trusted by artists worldwide</div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="hidden md:block">
-                      <div className="bg-white/10 backdrop-blur-sm p-8 rounded-2xl border border-white/20 shadow-xl transform hover:scale-105 transition-all duration-300">
-                        <div className="grid grid-cols-2 gap-6">
-                          {[
-                            { number: "100+", label: "Projects Completed" },
-                            { number: "20+", label: "Happy Clients" },
-                            { number: "2+", label: "Years Experience" },
-                            { number: "24/7", label: "Support" }
-                          ].map((stat, index) => (
-                            <div key={index} className="text-center group">
-                              <div className="text-4xl font-bold text-brown-700 mb-2 drop-shadow-lg group-hover:text-blue-400 transition-colors duration-300">{stat.number}</div>
-                              <div className="text-brown-600 text-sm group-hover:text-blue-300 transition-colors duration-300">{stat.label}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Main Content */}
+      {renderSection()}
 
-              {/* My Designs Section */}
-              <section className="py-20 bg-gradient-to-b from-white to-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="grid md:grid-cols-2 gap-12">
-                    {/* Left Side Content */}
-                    <div className="space-y-8">
-                      <div>
-                        <h2 className="text-4xl font-bold bg-gradient-to-r from-orange-500 via-sky-500 to-amber-700 text-transparent bg-clip-text mb-6 animate-gradient-shift">
-                          My Creative Journey
-                        </h2>
-                        <p className="text-gray-600 mb-6 animate-fade-in-up">
-                          With over 2 years of experience in graphic design, I've developed a unique style that combines modern aesthetics with functional design principles.
-                        </p>
-                      </div>
-                       
-                      <div className="space-y-6">
-                        <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all">
-                          <h3 className="text-xl font-semibold text-gray-800 mb-2">Design Philosophy</h3>
-                          <p className="text-gray-600">Creating designs that not only look beautiful but also serve their purpose effectively.</p>
-                        </div>
-                        
-                        <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all transform hover:scale-105 hover:-translate-y-1 duration-300">
-                          <h3 className="text-xl font-semibold text-gray-800 mb-6 animate-fade-in bg-gradient-to-r from-orange-500 via-sky-500 to-amber-700 text-transparent bg-clip-text">
-                            Skills & Expertise
-                          </h3>
-                          <div className="grid grid-cols-2 gap-6">
-                            {[
-                              { skill: "UI/UX Design", delay: "0", icon: "🎨", color: "from-purple-500 to-pink-500", textColor: "text-purple-600" },
-                              { skill: "Brand Identity", delay: "100", icon: "✨", color: "from-blue-500 to-teal-500", textColor: "text-blue-600" },
-                              { skill: "Logo Design", delay: "200", icon: "🎯", color: "from-amber-500 to-orange-500", textColor: "text-amber-600" },
-                              { skill: "Web Design", delay: "300", icon: "🌐", color: "from-green-500 to-emerald-500", textColor: "text-green-600" },
-                              { skill: "Mobile Design", delay: "400", icon: "📱", color: "from-indigo-500 to-purple-500", textColor: "text-indigo-600" },
-                              { skill: "Graphic Design", delay: "500", icon: "🎪", color: "from-rose-500 to-red-500", textColor: "text-rose-600" }
-                            ].map((item, index) => (
-                              <div 
-                                key={index}
-                                className="group relative overflow-hidden rounded-xl hover:shadow-lg transition-all duration-500 ease-out"
-                                style={{
-                                  animation: `fadeSlideIn 0.6s ease-out ${item.delay}ms both`
-                                }}
-                              >
-                                <div className="relative p-4 bg-white border border-gray-100 rounded-xl group-hover:border-transparent transition-all duration-300">
-                                  {/* Animated gradient background */}
-                                  <div className="absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-xl"
-                                       style={{
-                                         backgroundImage: `linear-gradient(120deg, ${item.color})`,
-                                         opacity: 0,
-                                         transform: 'scale(0.8)',
-                                       }}
-                                  />
-                                  
-                                  <div className="relative flex items-center space-x-3 z-20">
-                                    {/* Skill Icon with bounce animation */}
-                                    <div className="text-2xl group-hover:animate-bounce">{item.icon}</div>
-                                    
-                                    {/* Skill Name */}
-                                    <span className={`font-medium ${item.textColor} transition-colors duration-300 relative z-20`}>
-                                      {item.skill}
-                                      
-                                      {/* Animated underline */}
-                                      <span className={`absolute bottom-0 left-0 w-0 h-0.5 ${item.textColor} group-hover:w-full transition-all duration-300`}/>
-                                    </span>
-                                  </div>
-                                  
-                                  {/* Progress indicator */}
-                                  <div className="mt-2 relative h-1 bg-gray-100 rounded-full overflow-hidden">
-                                    <div 
-                                      className="absolute left-0 top-0 h-full rounded-full bg-gradient-to-r group-hover:animate-progress"
-                                      style={{
-                                        backgroundImage: `linear-gradient(90deg, ${item.color})`,
-                                        width: '0%'
-                                      }}
-                                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-                        <div className="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-all">
-                          <h3 className="text-xl font-semibold text-gray-800 mb-2">Project Stats</h3>
-                          <div className="grid grid-cols-2 gap-6">
-                            <div className="text-center">
-                              <div className="text-3xl font-bold text-blue-600">100+</div>
-                              <div className="text-gray-600">Projects</div>
-                            </div>
-                            <div className="text-center">
-                              <div className="text-3xl font-bold text-blue-600">20+</div>
-                              <div className="text-gray-600">Clients</div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right Side Content */}
-                    <div className="space-y-6">
-                      {/* Logo */}
-                      <div className="flex justify-center mb-8">
-                        <img 
-                          src={logoImage}
-                          alt="Logo"
-                          className="w-32 h-32 rounded-full object-cover border-4 border-orange-500 shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-                        />
-                      </div>
-
-                      {/* Images Grid */}
-                      <div className="grid grid-cols-2 gap-6">
-                        {[design1, design2, design3, design4].map((image, index) => (
-                          <div key={index} className="group relative overflow-hidden rounded-xl aspect-[4/3] shadow-lg hover:shadow-xl transition-all duration-300">
-                            <img 
-                              src={image}
-                              alt={`Design ${index + 1}`}
-                              className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-              </div>
-            ))}
-                      </div>
-                    </div>
-          </div>
-        </div>
-      </section>
-
-              {/* Side Matter Section */}
-              <section className="py-16 bg-gradient-to-r from-blue-50 to-purple-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  {/* Why Choose Us Section */}
-                  <div className="grid md:grid-cols-2 gap-8 items-center mb-12">
-                    <div className="space-y-4">
-                      <h2 className="text-3xl font-bold text-gray-800">Why Choose Us?</h2>
-                      <p className="text-gray-600">We combine creativity with technical expertise to deliver exceptional designs that help your brand stand out.</p>
-                      <ul className="space-y-3">
-                        {[
-                          "Professional and experienced team",
-                          "Customized design solutions",
-                          "Modern design trends",
-                          "Competitive pricing",
-                          "Regular updates and revisions"
-                        ].map((item, index) => (
-                          <li 
-                            key={index} 
-                            className="flex items-center space-x-2 animate-fade-in-up"
-                            style={{ animationDelay: `${index * 200}ms` }}
-                          >
-                            <svg 
-                              className="h-5 w-5 text-green-500 animate-bounce" 
-                              fill="none" 
-                              stroke="currentColor" 
-                              viewBox="0 0 24 24"
-                              style={{ animationDelay: `${index * 200}ms` }}
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
-                            <span className="text-gray-700">{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-            </div>
-                    <div className="relative">
-                      <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-purple-500/20 rounded-2xl"></div>
-                      <img 
-                        src={whyChooseUsImage}
-                        alt="Why Choose Us"
-                        className="relative rounded-2xl shadow-2xl w-full h-[300px] object-cover"
-              />
-            </div>
-          </div>
-
-                  {/* Fast Delivery Section */}
-                  <div className="grid md:grid-cols-3 gap-8">
-                    <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                      <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
-                        <svg className="h-6 w-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2">Fast Delivery</h3>
-                      <p className="text-gray-600">Quick turnaround time for all your design projects without compromising quality.</p>
-                    </div>
-                    <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                      <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
-                        <svg className="h-6 w-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2">Quality Assurance</h3>
-                      <p className="text-gray-600">Every design goes through rigorous quality checks to ensure perfection.</p>
-                    </div>
-                    <div className="bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
-                      <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center mb-4 animate-bounce">
-                        <svg className="h-6 w-6 text-pink-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-                        </svg>
-                      </div>
-                      <h3 className="text-xl font-semibold mb-2">24/7 Support</h3>
-                      <p className="text-gray-600">Round-the-clock support to help you with any design-related queries.</p>
-                    </div>
-                  </div>
-        </div>
-      </section>
-
-      {/* Footer */}
       <footer className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center mb-4">
-                        <span className="text-xl font-bold">The Art Beat</span>
+                <span className="text-xl font-bold">The Art Beat</span>
               </div>
               <p className="text-gray-400">
                 Creating art that moves and inspires.
@@ -378,108 +484,58 @@ function App() {
             <div>
               <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
               <ul className="space-y-2">
-                        <li>
-                          <Link 
-                            to="/" 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                              setTimeout(() => {
-                                window.location.href = '/';
-                              }, 500);
-                            }}
-                            className="text-gray-400 hover:text-white"
-                          >
-                            Home
-                          </Link>
-                        </li>
-                        <li>
-                          <Link 
-                            to="/portfolio" 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                              setTimeout(() => {
-                                window.location.href = '/portfolio';
-                              }, 500);
-                            }}
-                            className="text-gray-400 hover:text-white"
-                          >
-                            Portfolio
-                          </Link>
-                        </li>
-                        <li>
-                          <Link 
-                            to="/services" 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                              setTimeout(() => {
-                                window.location.href = '/services';
-                              }, 500);
-                            }}
-                            className="text-gray-400 hover:text-white"
-                          >
-                            Services
-                          </Link>
-                        </li>
-                        <li>
-                          <Link 
-                            to="/about" 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                              setTimeout(() => {
-                                window.location.href = '/about';
-                              }, 500);
-                            }}
-                            className="text-gray-400 hover:text-white"
-                          >
-                            About Us
-                          </Link>
-                        </li>
-                        <li>
-                          <Link 
-                            to="/contact" 
-                            onClick={(e) => {
-                              e.preventDefault();
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                              setTimeout(() => {
-                                window.location.href = '/contact';
-                              }, 500);
-                            }}
-                            className="text-gray-400 hover:text-white"
-                          >
-                            Contact Us
-                          </Link>
-                        </li>
+                <li>
+                  <a href="#home" className="text-gray-400 hover:text-white">
+                    Home
+                  </a>
+                </li>
+                <li>
+                  <a href="#portfolio" className="text-gray-400 hover:text-white">
+                    Portfolio
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" className="text-gray-400 hover:text-white">
+                    Services
+                  </a>
+                </li>
+                <li>
+                  <a href="#about" className="text-gray-400 hover:text-white">
+                    About Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#contact" className="text-gray-400 hover:text-white">
+                    Contact Us
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="text-lg font-semibold mb-4">Contact</h3>
               <ul className="space-y-2 text-gray-400">
-                        <li>Ayyappan Society</li>
-                        <li>Madhapur, Hyderabad</li>
-                        <li>Telangana</li>
-                        <li>
-                          <a 
-                            href="https://mail.google.com/mail/?view=cm&fs=1&to=rangakottalabusiness@gmail.com"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-800 font-bold hover:text-white transition-colors duration-300 flex items-center group"
-                          >
-                            rangakottalabusiness@gmail.com
-                            <svg 
-                              className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
-                              fill="none" 
-                              stroke="currentColor" 
-                              viewBox="0 0 24 24"
-                            >
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                          </a>
-                        </li>
-                        <li>+91 96420 03828</li>
+                <li>Ayyappan Society</li>
+                <li>Madhapur, Hyderabad</li>
+                <li>Telangana</li>
+                <li>
+                  <a 
+                    href="https://mail.google.com/mail/?view=cm&fs=1&to=rangakottalabusiness@gmail.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 font-bold hover:text-white transition-colors duration-300 flex items-center group"
+                  >
+                    rangakottalabusiness@gmail.com
+                    <svg 
+                      className="h-4 w-4 ml-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300" 
+                      fill="none" 
+                      stroke="currentColor" 
+                      viewBox="0 0 24 24"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                  </a>
+                </li>
+                <li>+91 96420 03828</li>
               </ul>
             </div>
             <div>
@@ -511,57 +567,7 @@ function App() {
           </div>
         </div>
       </footer>
-            </>
-          } />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-          <Route path="/contact" element={<Contact />} />
-          <Route path="/portfolio" element={<Portfolio />} />
-          <Route path="/brand-identity" element={<BrandIdentity />} />
-        </Routes>
     </div>
-    </Router>
-  );
-}
-
-function NavLink({ href, children, icon }: { href: string; children: React.ReactNode; icon: React.ReactNode }) {
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => {
-      window.location.href = href;
-    }, 500);
-  };
-
-  return (
-    <Link
-      to={href}
-      onClick={handleClick}
-      className="flex items-center space-x-1 text-gray-700 hover:text-orange-500 transition-colors"
-    >
-      {icon}
-      <span>{children}</span>
-    </Link>
-  );
-}
-
-function MobileNavLink({ href, children }: { href: string; children: React.ReactNode }) {
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => {
-      window.location.href = href;
-    }, 500);
-  };
-
-  return (
-    <Link
-      to={href}
-      onClick={handleClick}
-      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-orange-500 hover:bg-gray-50 transition-colors"
-    >
-      {children}
-    </Link>
   );
 }
 
